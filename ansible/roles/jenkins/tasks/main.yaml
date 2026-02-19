@@ -1,0 +1,77 @@
+---
+# tasks file for roles/jenkins
+
+# Jenkins runs on Java → Java requires font libraries even in headless mode.
+- name: Install prerequisites
+  apt:
+    name:
+      - fontconfig
+    state: present
+    update_cache: yes
+
+# Creates keyrings directory if missing.
+- name: Ensure keyrings directory exists
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+# Downloads official Jenkins GPG key. APT verifies package authenticity.
+- name: Download and install the new 2026 Jenkins signing key
+  get_url:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+    dest: /etc/apt/keyrings/jenkins-keyring.asc
+    mode: '0644'
+
+# Adds Jenkins repository to apt sources.
+# Jenkins is NOT in default Ubuntu repo. You must add official repo.
+# The signed-by= ensures it uses the correct GPG key. 
+- name: Add Jenkins stable repository with signed-by
+  copy:
+    content: |
+      deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/
+    dest: /etc/apt/sources.list.d/jenkins.list
+    mode: '0644'
+
+# After adding new repo, apt must refresh package list.
+- name: Update apt cache after adding repo
+  apt:
+    update_cache: yes
+
+# Installs Jenkins service and dependencies (including Java if required).
+- name: Install Jenkins
+  apt:
+    name: jenkins
+    state: present
+
+# Add Jenkins user to docker group
+- name: Add Jenkins user to docker group
+  user:
+    name: jenkins
+    groups: docker
+    append: yes
+
+# Starts Jenkins immediately. Enables it at boot
+- name: Start and enable Jenkins service
+  systemd:
+    name: jenkins
+    state: started
+    enabled: yes
+
+# Wait until port 8080 is open.
+- name: Wait for Jenkins to start (port 8080)
+  wait_for:
+    port: 8080
+    delay: 30
+    timeout: 300
+
+#Reads the initial unlock password. Jenkins requires this on first login.
+- name: Get initial admin password
+  command: cat /var/lib/jenkins/secrets/initialAdminPassword
+  register: initial_password
+  changed_when: false
+  failed_when: initial_password.rc != 0
+
+- name: Display initial admin password
+  debug:
+    msg: "Initial admin password: {{ initial_password.stdout }}"

@@ -1,0 +1,67 @@
+// Load shared library
+@Library('ci-lib') _
+
+pipeline {
+
+    // Run on any available Jenkins agent
+    agent any
+
+    // Global pipeline variables
+    environment {
+        APP_DIR     = 'src'
+        IMAGE_NAME  = 'youssefaelmansy/devops-app'
+        IMAGE_TAG   = "${BUILD_NUMBER}"
+        GIT_BRANCH  = "main"
+    }
+
+    stages {
+
+        stage('Build Image') {
+            // Build Docker image
+            steps {
+                dockerBuild(APP_DIR, IMAGE_NAME, IMAGE_TAG)
+            }
+        }
+
+        stage('Security Scan') {
+            // Scan image using Trivy
+            steps {
+                trivyImageScan(IMAGE_NAME, IMAGE_TAG)
+            }
+        }
+
+        stage('Push Image') {
+            // Push image to DockerHub
+            steps {
+                pushImage(IMAGE_NAME, IMAGE_TAG)
+            }
+        }
+
+        stage('Cleanup Local Image') {
+            // Remove local image to free agent space
+            steps {
+                removeImageLocally(IMAGE_NAME, IMAGE_TAG)
+            }
+        }
+
+        stage('Update K8s Manifest (GitOps)') {
+            // Update deployment.yaml and push to manifests repo
+            steps {
+                updateAndPushManifest(IMAGE_NAME, IMAGE_TAG)
+            }
+        }
+    }
+
+    post {
+
+        success {
+            // Pipeline completed successfully
+            echo 'CI/CD pipeline completed successfully'
+        }
+
+        failure {
+            // Pipeline execution failed
+            echo 'Pipeline failed'
+        }
+    }
+}
