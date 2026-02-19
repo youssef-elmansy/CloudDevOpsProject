@@ -5,7 +5,8 @@ Enterprise End-to-End DevOps Project implementing full CI/CD and GitOps workflow
 ---
 ## 🖼 Architecture Diagram
 
-![](./Images-Video/project_arch.drawio.png)
+<img width="1055" height="702" alt="image" src="https://github.com/user-attachments/assets/7062fd2b-65b2-479e-af60-ce981dc00e8e" />
+
 
 ---
 ## 📌 Architecture Overview
