@@ -3,7 +3,11 @@
 Enterprise End-to-End DevOps Project implementing full CI/CD and GitOps workflow on AWS using Terraform, Ansible (with Vault), Jenkins, Kubernetes (EKS), and ArgoCD.
 
 ---
+## 🖼 Architecture Diagram
 
+![](./Images-Video/project_arch.drawio.png)
+
+---
 ## 📌 Architecture Overview
 
 This project represents a production-grade DevOps architecture where the entire lifecycle—from infrastructure provisioning to application deployment—is fully automated.
@@ -48,11 +52,7 @@ This project represents a production-grade DevOps architecture where the entire 
 * Terraform Backend: S3
 
 ---
-## 🖼 Architecture Diagram
 
-![](./Images-Video/project_arch.drawio.png)
-
----
 ## ☁ Infrastructure Provisioning (Terraform)
 
 📁 Directory: `terraform/`
