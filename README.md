@@ -310,10 +310,6 @@ ArgoCD will:
 [iVolve Project Demo](https://drive.google.com/file/d/1NNemjR5n22CHM4rblo7V2zxKYWYbQJ97/view?usp=drivesdk)
 
 ---
-## Authors
-
-- Mai Salama  
+## Authors 
 - Youssef Mansy  
-- Mohamed Taha  
-
-**DevOps & Cloud Engineers**
+**Cloud DevOps Engineer**
