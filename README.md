@@ -311,5 +311,5 @@ ArgoCD will:
 
 ---
 ## Authors 
-- Youssef Mansy  
+- Youssef Elmansy  
 **Cloud DevOps Engineer**
